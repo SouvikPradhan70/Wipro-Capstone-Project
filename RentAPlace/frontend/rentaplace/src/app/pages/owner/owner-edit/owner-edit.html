@@ -1,0 +1,50 @@
+<h2>Edit Property</h2>
+
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
+  <mat-form-field appearance="outline">
+    <mat-label>Title</mat-label>
+    <input matInput formControlName="title">
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>City</mat-label>
+    <input matInput formControlName="city">
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Country</mat-label>
+    <input matInput formControlName="country">
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Price per Night</mat-label>
+    <input type="number" matInput formControlName="pricePerNight">
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Property Type</mat-label>
+    <mat-select formControlName="propertyType">
+      <mat-option value="Apartment">Apartment</mat-option>
+      <mat-option value="Villa">Villa</mat-option>
+      <mat-option value="House">House</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Max Guests</mat-label>
+    <input type="number" min="1" matInput formControlName="maxGuests">
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Bedrooms</mat-label>
+    <input type="number" min="1" matInput formControlName="bedrooms">
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Bathrooms</mat-label>
+    <input type="number" min="1" matInput formControlName="bathrooms">
+  </mat-form-field>
+
+  <button mat-flat-button color="primary" type="submit">Save Changes</button>
+</form>
+

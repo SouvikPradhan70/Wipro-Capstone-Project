@@ -1,0 +1,40 @@
+<div class="filters">
+  <mat-form-field appearance="outline">
+    <mat-label>City</mat-label>
+    <input matInput [(ngModel)]="city">
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Country</mat-label>
+    <input matInput [(ngModel)]="country">
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Property Type</mat-label>
+    <mat-select [(ngModel)]="propertyType">
+      <mat-option value="">Any</mat-option>
+      <mat-option value="Apartment">Apartment</mat-option>
+      <mat-option value="Villa">Villa</mat-option>
+      <mat-option value="House">House</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Guests</mat-label>
+    <input type="number" min="1" matInput [(ngModel)]="guests">
+  </mat-form-field>
+
+  <button mat-flat-button color="primary" (click)="search()">Apply</button>
+</div>
+
+<div *ngIf="loading">Loading...</div>
+
+<div class="grid">
+  <mat-card class="prop" *ngFor="let p of items" (click)="view(p.id)">
+    <img *ngIf="p.images?.length" [src]="'http://localhost:5264' + p.images[0]" alt="cover" />
+    <mat-card-title>{{ p.title }}</mat-card-title>
+    <mat-card-subtitle>{{ p.city }}, {{ p.country }}</mat-card-subtitle>
+    <div class="price">₹ {{ p.pricePerNight }} / night</div>
+
+  </mat-card>
+</div>

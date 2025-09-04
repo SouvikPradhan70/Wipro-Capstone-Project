@@ -1,0 +1,21 @@
+<div class="auth-card">
+  <h2>Login</h2>
+
+  <form (ngSubmit)="submit()">
+    <mat-form-field appearance="outline">
+      <mat-label>Email</mat-label>
+      <input matInput [(ngModel)]="model.email" name="email" required>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Password</mat-label>
+      <input matInput type="password" [(ngModel)]="model.password" name="password" required>
+    </mat-form-field>
+
+    <div class="error" *ngIf="error">{{ error }}</div>
+
+    <button mat-flat-button color="primary" [disabled]="loading">
+      {{ loading ? 'Please wait...' : 'Login' }}
+    </button>
+  </form>
+</div>

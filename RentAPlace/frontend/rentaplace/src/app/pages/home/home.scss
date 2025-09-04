@@ -1,0 +1,8 @@
+.hero { padding: 32px; text-align: center; }
+.search-card {
+  max-width: 900px;
+  margin: 16px auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr auto;
+  gap: 12px;
+}

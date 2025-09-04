@@ -1,0 +1,67 @@
+<div *ngIf="data as p; else loading">
+  <h2>{{ p.title }}</h2>
+  <div class="gallery">
+    <img *ngIf="p.images?.length" [src]="'http://localhost:5264' + p.images[0].imageUrl" alt="cover" />
+  </div>
+
+  <p>{{ p.description }}</p>
+  <div class="meta">
+    <div>Type: {{ p.propertyType }}</div>
+    <div>Guests: up to {{ p.maxGuests }}</div>
+    <div>Bedrooms: {{ p.bedrooms }} • Bathrooms: {{ p.bathrooms }}</div>
+    <div>Location: {{ p.city }}, {{ p.country }}</div>
+    <div>Price: ₹ {{ p.pricePerNight }} per night</div>
+  </div>
+
+  <div class="amen">
+    <h3>Amenities</h3>
+    <mat-chip-set>
+      <mat-chip *ngFor="let a of p.propertyAmenities">{{ a.amenity.name }}</mat-chip>
+    </mat-chip-set>
+  </div>
+
+  <div class="book" *ngIf="auth.role === 'Renter'; else loginFirst">
+    <h3>Book this place</h3>
+    <div class="book-grid">
+      <mat-form-field appearance="outline">
+        <mat-label>Check-in</mat-label>
+        <input matInput type="date" [(ngModel)]="checkIn" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Check-out</mat-label>
+        <input matInput type="date" [(ngModel)]="checkOut" />
+      </mat-form-field>
+    </div>
+    <button mat-flat-button color="primary" (click)="book()">Book Now</button>
+    <p>{{ msg }}</p>
+  </div>
+
+  <!-- For messages -->
+  <div class="messages" *ngIf="auth.role === 'Renter'">
+    <h3>Send Message to Owner</h3>
+    <mat-form-field appearance="outline" class="w-100">
+      <mat-label>Your message</mat-label>
+      <textarea matInput rows="3" [(ngModel)]="newMessage"></textarea>
+    </mat-form-field>
+    <button mat-flat-button color="accent" (click)="sendMessage()">Send</button>
+    <p>{{ messageStatus }}</p>
+  </div>
+
+  <!-- Show owner replies for this renter -->
+  <div class="replies" *ngIf="replies.length > 0">
+    <h3>Owner Replies</h3>
+    <div *ngFor="let m of replies">
+      <p *ngIf="m.senderId.toString() !== auth.userId"><strong>Owner:</strong> {{ m.content }}</p>
+      <p *ngIf="m.senderId.toString() === auth.userId"><strong>You:</strong> {{ m.content }}</p>
+    </div>
+  </div>
+</div>
+
+<ng-template #loading>
+  <p>Loading property details...</p>
+</ng-template>
+
+<ng-template #loginFirst>
+  <p>Please login to book this property.</p>
+</ng-template>

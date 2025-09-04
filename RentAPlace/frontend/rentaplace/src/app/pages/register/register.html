@@ -1,0 +1,34 @@
+<div class="auth-card">
+  <h2>Create account</h2>
+
+  <form (ngSubmit)="submit()">
+    <mat-form-field appearance="outline">
+      <mat-label>Full name</mat-label>
+      <input matInput [(ngModel)]="model.fullName" name="fullName" required>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Email</mat-label>
+      <input matInput [(ngModel)]="model.email" name="email" required>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Password</mat-label>
+      <input matInput type="password" [(ngModel)]="model.password" name="password" required>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Role</mat-label>
+      <mat-select [(ngModel)]="model.role" name="role">
+        <mat-option value="Renter">Renter</mat-option>
+        <mat-option value="Owner">Owner</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <div class="error" *ngIf="error">{{ error }}</div>
+
+    <button mat-flat-button color="primary" [disabled]="loading">
+      {{ loading ? 'Please wait...' : 'Register' }}
+    </button>
+  </form>
+</div>

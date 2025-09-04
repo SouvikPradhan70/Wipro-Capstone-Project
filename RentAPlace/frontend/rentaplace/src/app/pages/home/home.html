@@ -1,0 +1,21 @@
+<div class="hero">
+  <h1>Find your next stay</h1>
+  <div class="search-card">
+    <mat-form-field appearance="outline">
+      <mat-label>City</mat-label>
+      <input matInput [(ngModel)]="city">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Country</mat-label>
+      <input matInput [(ngModel)]="country">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Guests</mat-label>
+      <input type="number" min="1" matInput [(ngModel)]="guests">
+    </mat-form-field>
+
+    <button mat-flat-button color="primary" (click)="search()">Search</button>
+  </div>
+</div>
