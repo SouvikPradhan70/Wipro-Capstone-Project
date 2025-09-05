@@ -1,49 +1,95 @@
-<h2>My Properties</h2>
-<a mat-flat-button color="primary" routerLink="/owner/add">Add Property</a>
+<div class="owner-dashboard container py-4">
 
-<div *ngIf="loading">Loading...</div>
-
-<div class="grid">
-  <mat-card class="prop" *ngFor="let p of list">
-    <img *ngIf="p.images?.length" [src]="'http://localhost:5264' + p.images[0].imageUrl" alt="cover" />
-    <mat-card-title>{{ p.title }}</mat-card-title>
-    <mat-card-subtitle>{{ p.city }}, {{ p.country }}</mat-card-subtitle>
-    <div>₹ {{ p.pricePerNight }} / night</div>
-
-    <!-- OWNER ACTION BUTTONS -->
-    <div class="owner-actions">
-      <button mat-flat-button color="accent" (click)="edit(p)">Edit</button>
-      <button mat-flat-button color="warn" (click)="delete(p.id)">Delete</button>
-      <button mat-flat-button color="primary" (click)="openMessages(p.id)">View Messages</button>
-    </div>
-  </mat-card>
-</div>
-
-<!--Added: Messages Modal -->
-<div *ngIf="selectedPropertyId" class="messages-modal">
-  <div class="modal-content">
-
-    <h3>Messages for {{ selectedProperty?.title }}</h3>
-
-    <div *ngIf="messages[selectedPropertyId]?.length; else noMsg">
-      <div *ngFor="let m of messages[selectedPropertyId]" class="message">
-        <p><strong>{{ m.senderId === auth.userId ? 'You' : 'Renter' }}:</strong> {{ m.content }}</p>
-
-        <!-- Reply Section -->
-        <mat-form-field appearance="outline" class="w-100">
-          <mat-label>Reply</mat-label>
-          <textarea matInput rows="2" [(ngModel)]="replyMessages[m.id]"></textarea>
-        </mat-form-field>
-
-        <!-- UPDATED: pass the full message object instead of senderId -->
-        <button mat-flat-button color="accent"
-                (click)="sendReply(m, selectedPropertyId, m.id)">
-                Reply
-              </button>
-      </div>
-    </div>
-
-    <ng-template #noMsg><p>No messages yet.</p></ng-template>
-    <button mat-button color="warn" (click)="closeMessages()">Close</button>
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>My Properties</h2>
+    <a mat-flat-button color="primary" routerLink="/owner/add">Add Property</a>
   </div>
+
+  <div *ngIf="loading" class="text-center py-4">Loading...</div>
+
+  <!-- Properties Grid -->
+  <div class="grid">
+    <mat-card class="prop" *ngFor="let p of list">
+      <img *ngIf="p.images?.length" [src]="'http://localhost:5264' + p.images[0].imageUrl" alt="cover" />
+      <mat-card-title>{{ p.title }}</mat-card-title>
+      <mat-card-subtitle>{{ p.city }}, {{ p.country }}</mat-card-subtitle>
+      <div class="price">₹ {{ p.pricePerNight }} / night</div>
+
+      <div class="owner-actions">
+        <!-- Row for Edit + Delete -->
+        <div class="row-actions">
+          <button mat-flat-button color="accent" (click)="edit(p)">Edit</button>
+          <button mat-flat-button color="warn" (click)="delete(p.id)">Delete</button>
+        </div>
+        <!-- View Messages below, full width -->
+        <button mat-flat-button color="primary" class="view-msg-btn"
+                (click)="openMessages(p.id)">View Messages</button>
+      </div>
+    </mat-card>
+  </div>
+
+  <!-- Reservations Section -->
+  <h2 class="mt-5">Reservations</h2>
+  <div *ngIf="reservations.length; else noReservations" class="table-responsive">
+    <table class="reservation-table table table-striped table-hover">
+      <thead class="table-light">
+        <tr>
+          <th>Property</th>
+          <th>Renter ID</th>
+          <th>Check In</th>
+          <th>Check Out</th>
+          <th>Total Price</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let r of reservations">
+          <td>{{ r.propertyTitle }}</td>
+          <td>{{ r.renterId }}</td>
+          <td>{{ r.checkIn }}</td>
+          <td>{{ r.checkOut }}</td>
+          <td>₹ {{ r.totalPrice }}</td>
+          <td>{{ r.status }}</td>
+          <td>
+            <button mat-flat-button color="primary"
+                    *ngIf="r.status === 'Pending'"
+                    (click)="confirmReservation(r.id)">Confirm</button>
+            <button mat-flat-button color="warn"
+                    *ngIf="r.status !== 'Cancelled'"
+                    (click)="cancelReservation(r.id)">Cancel</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <ng-template #noReservations><p>No reservations yet.</p></ng-template>
+
+  <!-- Messages Modal -->
+  <div *ngIf="selectedPropertyId" class="messages-modal">
+    <div class="modal-content card p-3 shadow">
+      <h3 class="mb-3">Messages for {{ selectedProperty?.title }}</h3>
+
+      <div *ngIf="messages[selectedPropertyId]?.length; else noMsg">
+        <div *ngFor="let m of messages[selectedPropertyId]" class="message p-2 mb-2 bg-light rounded">
+          <p><strong>{{ m.senderId === auth.userId ? 'You' : 'Renter' }}:</strong> {{ m.content }}</p>
+
+          <mat-form-field appearance="outline" class="w-100 mb-2">
+            <mat-label>Reply</mat-label>
+            <textarea matInput rows="2" [(ngModel)]="replyMessages[m.id]"></textarea>
+          </mat-form-field>
+
+          <button mat-flat-button color="accent"
+                  class="mb-2"
+                  (click)="sendReply(m, selectedPropertyId, m.id)">
+            Reply
+          </button>
+        </div>
+      </div>
+
+      <ng-template #noMsg><p>No messages yet.</p></ng-template>
+      <button mat-button color="warn" (click)="closeMessages()">Close</button>
+    </div>
+  </div>
+
 </div>

@@ -172,3 +172,4 @@ C:\Users\KIIT\Desktop\Wipro Capstone Project\RentAPlace\backend\RentAPlace.Api\o
 C:\Users\KIIT\Desktop\Wipro Capstone Project\RentAPlace\backend\RentAPlace.Api\obj\Debug\net8.0\RentAPlace.Api.pdb
 C:\Users\KIIT\Desktop\Wipro Capstone Project\RentAPlace\backend\RentAPlace.Api\obj\Debug\net8.0\RentAPlace.Api.genruntimeconfig.cache
 C:\Users\KIIT\Desktop\Wipro Capstone Project\RentAPlace\backend\RentAPlace.Api\obj\Debug\net8.0\ref\RentAPlace.Api.dll
+C:\Users\KIIT\Desktop\Wipro Capstone Project\RentAPlace\backend\RentAPlace.Api\obj\Debug\net8.0\RentAPlace.Api.sourcelink.json

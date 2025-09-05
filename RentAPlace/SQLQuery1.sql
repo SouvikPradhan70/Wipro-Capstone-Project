@@ -91,11 +91,6 @@ CREATE TABLE Reviews (
 INSERT INTO Amenities([Name]) VALUES
 ('WiFi'),('Air Conditioning'),('Heating'),('Kitchen'),('Washer'),('Dryer'),('Free Parking'),('Pool'),('Gym'),('Sea View');
 
-
-ALTER TABLE Users
-ADD CreatedAt DATETIME2 NOT NULL DEFAULT GETUTCDATE(),
-    UpdatedAt DATETIME2 NULL;
-
 ALTER TABLE Users
 ADD UpdatedAt DATETIME2 NULL;
 SELECT * FROM Users;
@@ -115,3 +110,26 @@ SELECT * FROM Messages;
 
 DELETE FROM Messages
 WHERE Id=8;
+
+DELETE FROM Reservations
+WHERE PropertyId=50 AND Id=7;
+
+SELECT * FROM Properties;
+
+SELECT * FROM Reviews;
+
+ALTER TABLE Reviews
+ADD UpdatedAt DATETIME2 NOT NULL DEFAULT GETUTCDATE();
+ALTER TABLE Reviews
+ALTER COLUMN UpdatedAt DATETIME2 NULL;
+
+SELECT * FROM PropertyAmenities;
+
+
+SELECT * FROM Users;
+SELECT * FROM Properties;
+SELECT * FROM PropertyAmenities;
+SELECT * FROM PropertyImages;
+SELECT * FROM Reservations;
+SELECT * FROM Messages;
+SELECT * FROM Reviews;

@@ -207,5 +207,15 @@ namespace RentAPlace.Api.Controllers
                 .Include(p => p.Images).ToListAsync();
             return Ok(list);
         }
+
+
+
+        // GET api/properties/amenities
+        [HttpGet("amenities")]
+        public async Task<ActionResult<IEnumerable<Amenity>>> GetAmenities()
+        {
+            var amenities = await _db.Amenities.OrderBy(a => a.Id).ToListAsync();
+            return Ok(amenities);
+        }
     }
 }

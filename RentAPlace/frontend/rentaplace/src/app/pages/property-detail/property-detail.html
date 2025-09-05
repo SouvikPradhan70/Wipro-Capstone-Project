@@ -48,12 +48,90 @@
     <p>{{ messageStatus }}</p>
   </div>
 
+  <!-- Renter’s bookings -->
+  <div class="my-reservations" *ngIf="myReservations.length > 0">
+    <h3>My Reservations for this Property</h3>
+
+    <table class="reservations-table">
+      <thead>
+        <tr>
+          <th>Status</th>
+          <th>Check-in</th>
+          <th>Check-out</th>
+          <th>Total Price</th>
+          <th>Action</th> <!-- Added -->
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let r of myReservations">
+          <td>{{ r.status }}</td>
+          <td>{{ r.checkIn | date }}</td>
+          <td>{{ r.checkOut | date }}</td>
+          <td>₹ {{ r.totalPrice }}</td>
+          <td>
+            <!-- Show Cancel button only if status is Pending -->
+            <button *ngIf="r.status === 'Pending'" mat-flat-button color="warn" (click)="cancelReservation(r.id)">
+              Cancel
+            </button>
+
+            <!-- Disabled button for Confirmed/Cancelled -->
+            <button *ngIf="r.status !== 'Pending'" mat-flat-button color="warn" disabled>
+              Cancel
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+
   <!-- Show owner replies for this renter -->
   <div class="replies" *ngIf="replies.length > 0">
     <h3>Owner Replies</h3>
     <div *ngFor="let m of replies">
       <p *ngIf="m.senderId.toString() !== auth.userId"><strong>Owner:</strong> {{ m.content }}</p>
       <p *ngIf="m.senderId.toString() === auth.userId"><strong>You:</strong> {{ m.content }}</p>
+    </div>
+  </div>
+
+  <!-- REVIEWS SECTION -->
+  <div class="reviews" *ngIf="data">
+    <h3>Reviews</h3>
+
+    <!-- Overall rating -->
+    <div *ngIf="reviews.length > 0" class="overall-rating">
+      <mat-icon color="warn" *ngFor="let s of [1,2,3,4,5]">
+        {{ s <= averageRating() ? 'star' : 'star_border' }} <!-- <-- fixed: single loop -->
+      </mat-icon>
+      ({{ reviews.length }} reviews)
+    </div>
+
+    <!-- List all reviews -->
+    <div *ngFor="let r of reviews" class="review-card">
+      <strong>{{ r.renterName }}</strong>
+      <span class="stars">
+        <mat-icon color="warn" *ngFor="let s of [1,2,3,4,5]">
+          {{ s <= r.rating ? 'star' : 'star_border' }} </mat-icon>
+      </span>
+      <p *ngIf="r.comment">{{ r.comment }}</p>
+    </div>
+
+    <!-- Form to submit review -->
+    <div *ngIf="auth.role === 'Renter' && !myReview" class="submit-review">
+      <h4>Leave a Review</h4>
+      <div class="star-input">
+        <mat-icon *ngFor="let s of [1,2,3,4,5]" (mouseenter)="setHover(s)" (mouseleave)="setHover(0)"
+          (click)="setRating(s)">
+          {{ s <= (ratingHover || ratingSelected) ? 'star' : 'star_border' }} </mat-icon>
+      </div>
+
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Comment (optional)</mat-label>
+        <textarea matInput rows="3" [(ngModel)]="comment"></textarea>
+      </mat-form-field>
+
+      <button mat-flat-button color="primary" (click)="submitReview()">Submit Review</button>
+      <p>{{ msg }}</p>
     </div>
   </div>
 </div>

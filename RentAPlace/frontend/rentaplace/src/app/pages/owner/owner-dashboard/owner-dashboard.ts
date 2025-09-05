@@ -11,6 +11,7 @@ import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { AuthService } from '../../../core/services/auth.service';
+import { ReservationService, ReservationDto } from '../../../core/services/reservation.service'; 
 
 @Component({
   selector: 'app-owner-dashboard',
@@ -27,10 +28,14 @@ export class OwnerDashboard implements OnInit {
   selectedPropertyId: number | null = null;
   selectedProperty: PropertyFull | null = null;
 
-  constructor(private api: PropertyService, private messagesApi: MessageService,private router: Router,public auth: AuthService) {}
+  //store reservations for owner
+  reservations: ReservationDto[] = [];
+
+  constructor(private api: PropertyService, private messagesApi: MessageService,private router: Router,public auth: AuthService,private reservationApi: ReservationService) {}
 
   ngOnInit() {
     this.refresh();
+    this.loadReservations();
   }
 
   refresh() {
@@ -48,6 +53,14 @@ export class OwnerDashboard implements OnInit {
         this.loading = false;
       },
       error: _ => (this.loading = false)
+    });
+  }
+
+  //load owner reservations from backend
+  loadReservations() { 
+    this.reservationApi.getOwnerReservations().subscribe({
+      next: res => this.reservations = res,
+      error: err => console.error('Failed to load reservations', err)
     });
   }
 
@@ -119,5 +132,21 @@ export class OwnerDashboard implements OnInit {
     },
     error: err => alert('Failed to send reply')
   });
-}
+  }
+
+  //confirm a reservation
+  confirmReservation(reservationId: number) { 
+    this.reservationApi.confirm(reservationId).subscribe({
+      next: _ => this.loadReservations(), // reload reservations after confirm
+      error: err => alert('Failed to confirm reservation')
+    });
+  }
+
+  // Added: cancel a reservation
+  cancelReservation(reservationId: number) { 
+    this.reservationApi.cancel(reservationId).subscribe({
+      next: _ => this.loadReservations(), // reload reservations after cancel
+      error: err => alert('Failed to cancel reservation')
+    });
+  }
 }

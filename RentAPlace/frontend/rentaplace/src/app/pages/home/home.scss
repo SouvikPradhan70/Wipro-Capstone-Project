@@ -1,8 +1,27 @@
-.hero { padding: 32px; text-align: center; }
+.hero {
+  text-align: center;
+
+  h1 {
+    font-weight: 600;
+    font-size: 2.5rem;
+  }
+}
+
 .search-card {
-  max-width: 900px;
-  margin: 16px auto;
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr auto;
-  gap: 12px;
+  max-width: 1000px;
+  margin: 0 auto;
+  border-radius: 12px; 
+  
+  mat-form-field {
+    width: 100%; 
+  }
+
+  button {
+    width: 80%;       
+    height: 50px;      
+    margin-top: -70px; 
+    display: block;    
+    margin-left: auto;
+    margin-right: auto;
+  }
 }

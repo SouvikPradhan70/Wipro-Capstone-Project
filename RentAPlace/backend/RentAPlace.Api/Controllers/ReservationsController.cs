@@ -7,6 +7,7 @@ using RentAPlace.Api.Models;
 using RentAPlace.Api.Services;
 using System.Security.Claims;
 
+
 namespace RentAPlace.Api.Controllers
 {
     [ApiController]
@@ -92,6 +93,56 @@ namespace RentAPlace.Api.Controllers
             res.UpdatedAt = DateTime.UtcNow;
             await _db.SaveChangesAsync();
             return Ok(new { res.Id, res.Status });
+        }
+
+
+        // GET api/reservations/owner
+        [HttpGet("owner")]
+        [Authorize(Roles = "Owner")]
+        public async Task<ActionResult> GetOwnerReservations()
+        {
+            var ownerId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+
+            var reservations = await _db.Reservations
+                .Include(r => r.Property)
+                .Where(r => r.Property!.OwnerId == ownerId)
+                .Select(r => new
+                {
+                    r.Id,
+                    PropertyTitle = r.Property!.Title,
+                    r.RenterId,
+                    r.Status,
+                    r.CheckIn,
+                    r.CheckOut,
+                    r.TotalPrice
+                })
+                .ToListAsync();
+
+            return Ok(reservations);
+        }
+
+        // GET api/reservations/my
+        [HttpGet("my")]
+        [Authorize(Roles = "Renter")]
+        public async Task<ActionResult> GetMyReservations()
+        {
+            var renterId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+
+            var reservations = await _db.Reservations
+                .Include(r => r.Property)
+                .Where(r => r.RenterId == renterId)
+                .Select(r => new
+                {
+                    r.Id,
+                    PropertyTitle = r.Property!.Title,
+                    r.Status,
+                    r.CheckIn,
+                    r.CheckOut,
+                    r.TotalPrice
+                })
+                .ToListAsync();
+
+            return Ok(reservations);
         }
     }
 }

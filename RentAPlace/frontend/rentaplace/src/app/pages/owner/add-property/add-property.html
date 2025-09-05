@@ -79,6 +79,25 @@
       />
     </mat-form-field>
 
+    <mat-form-field appearance="outline">
+      <mat-label>Bathrooms</mat-label>
+      <input
+        type="number"
+        min="1"
+        matInput
+        [(ngModel)]="model.bathrooms"
+        name="bathrooms"
+        required
+      />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Amenities</mat-label>
+      <mat-select [(ngModel)]="model.amenityIds" name="amenities" multiple>
+        <mat-option *ngFor="let a of amenitiesList" [value]="a.id">{{ a.name }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
     <!-- Submit button -->
     <button
       mat-raised-button

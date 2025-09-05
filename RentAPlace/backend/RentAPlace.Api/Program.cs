@@ -6,6 +6,7 @@ using Microsoft.OpenApi.Models;
 using RentAPlace.Api.Data;
 using RentAPlace.Api.Services;
 
+//start building your webapplication.
 var builder = WebApplication.CreateBuilder(args);
 
 // Add DbContext
@@ -17,12 +18,13 @@ builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<IEmailService, SmtpEmailService>();
 builder.Services.AddScoped<IImageService, ImageService>();
 
+//add controllers and json options to avoid cycles in navigation properties
 builder.Services.AddControllers().AddJsonOptions(options =>
     {
         options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
     });
 
-// CORS so Angular (http://localhost:4200) can call the API
+// CORS so Angular (http://localhost:4200) can call the API (cross origin resource sharing)
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAngular", policy =>
@@ -32,7 +34,7 @@ builder.Services.AddCors(options =>
               .AllowCredentials());
 });
 
-// JWT auth
+// JWT auth(json web token)
 var key = Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!);
 builder.Services.AddAuthentication(options =>
 {
@@ -52,6 +54,7 @@ builder.Services.AddAuthentication(options =>
 });
 
 // Swagger with JWT support
+//setting up swagger with JWT token.
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
@@ -76,6 +79,7 @@ var app = builder.Build();
 app.UseCors("AllowAngular");
 app.UseStaticFiles(); // serve images from wwwroot
 
+//if in development mode , swagger will work or else not if it is in production mode ..
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

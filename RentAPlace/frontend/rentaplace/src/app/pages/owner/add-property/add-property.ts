@@ -47,7 +47,18 @@ export class AddProperty {
   files: File[] = [];
   msg = '';
 
+  //amenities list fetched from backend
+  amenitiesList: { id: number; name: string }[] = [];
+
   constructor(private api: PropertyService, private router: Router) {}
+
+  ngOnInit() {
+    // ✅ Fetch amenities from backend
+    this.api.getAmenities().subscribe({
+      next: (res: any) => this.amenitiesList = res,
+      error: (err: any) => this.msg = 'Failed to load amenities'
+    });
+  }
 
   create() {
     this.api.create(this.model).subscribe({

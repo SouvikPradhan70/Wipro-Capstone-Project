@@ -59,4 +59,8 @@ export class PropertyService {
   getMine() {
     return this.http.get(`/api/properties/mine`);
   }
+
+  getAmenities() {
+    return this.http.get<{ id: number; name: string }[]>(`${this.api}/amenities`);
+  }
 }

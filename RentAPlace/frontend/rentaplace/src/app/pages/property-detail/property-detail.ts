@@ -14,6 +14,11 @@ import { AuthService } from '../../core/services/auth.service';
 import { MessageService } from '../../core/services/message.service';
 import { Message } from '../../models/message.models';
 
+import { ReviewService } from '../../core/services/review.service';
+import { Review } from '../../models/review.models';
+
+import { MatIconModule } from '@angular/material/icon';
+
 
 @Component({
   selector: 'app-property-detail',
@@ -24,7 +29,8 @@ import { Message } from '../../models/message.models';
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
-    MatChipsModule
+    MatChipsModule,
+    MatIconModule
   ],
   templateUrl: './property-detail.html',
   styleUrls: ['./property-detail.scss']
@@ -43,6 +49,14 @@ export class PropertyDetail implements OnInit {
 
   //Store messages (replies) for this renter
   replies: Message[] = [];
+  myReservations: any[] = [];
+
+  // --- Reviews ---
+  reviews: Review[] = [];       // all reviews for this property
+  myReview?: Review;            // renter's review
+  ratingHover = 0;              // star hover state
+  ratingSelected = 0;           // star selected state
+  comment = '';                 // optional comment
 
 
   constructor(
@@ -50,22 +64,78 @@ export class PropertyDetail implements OnInit {
     private api: PropertyService,
     private reservations: ReservationService,
     public auth: AuthService,
-    private messages: MessageService
-  ) {}
+    private messages: MessageService,
+    private reviewApi: ReviewService
+  ) { }
 
   ngOnInit() {
     this.id = Number(this.route.snapshot.paramMap.get('id'));
-    this.api.getById(this.id).subscribe(p => (this.data = p));
+    this.api.getById(this.id).subscribe(p => {
+      this.data = p;
+      this.loadReviews();  // <-- load reviews after property loaded
+    });
 
-    this.loadMessages(); 
+    this.loadMessages();
+    this.loadMyReservations();
   }
+
+  // --- Load reviews ---
+  loadReviews() {
+    this.reviewApi.getByProperty(this.id).subscribe(res => {
+      this.reviews = res;
+
+      // check if current renter already submitted
+      this.myReview = this.reviews.find(r => r.renterId === this.auth.userId);
+      if (this.myReview) {
+        this.ratingSelected = this.myReview.rating;
+        this.comment = this.myReview.comment || '';
+      }
+    });
+  }
+
+  // --- Submit review ---
+  submitReview() {
+    if (this.ratingSelected <= 0) {
+      this.msg = 'Please select a rating';
+      return;
+    }
+
+    this.reviewApi.create({
+      propertyId: this.id,
+      rating: this.ratingSelected,
+      comment: this.comment
+    }).subscribe({
+      next: () => {
+        this.msg = 'Review submitted successfully';
+        this.loadReviews();
+      },
+      error: err => this.msg = err?.error ?? 'Failed to submit review'
+    });
+  }
+
+  // --- Star hover + click ---
+  setHover(star: number) { this.ratingHover = star; }
+  setRating(star: number) { this.ratingSelected = star; }
+
+  // Calculate average rating (rounded to nearest integer for display)
+  averageRating(): number {
+    if (!this.reviews || this.reviews.length === 0) return 0;
+    const total = this.reviews.reduce((sum, r) => sum + r.rating, 0);
+    return Math.round(total / this.reviews.length); 
+  }
+
   loadMessages() {
     this.messages.getByProperty(this.id).subscribe(msgs => {
       const userId = this.auth.userId; // current renter
       // show only messages where renter is sender or receiver
-      this.replies = msgs.filter(m => 
+      this.replies = msgs.filter(m =>
         m.senderId.toString() === userId || m.receiverId.toString() === userId || m.senderId !== userId
       );
+    });
+  }
+  loadMyReservations() {
+    this.reservations.getMy().subscribe(res => {
+      this.myReservations = res.filter((r: any) => r.propertyTitle === this.data?.title);
     });
   }
 
@@ -84,8 +154,10 @@ export class PropertyDetail implements OnInit {
         guests: this.guests
       })
       .subscribe({
-        next: (res: any) =>
-          (this.msg = `Reservation ${res.status}. Total price: ₹ ${res.totalPrice}`),
+        next: (res: any) => {
+          this.msg = `Reservation ${res.status}. Total price: ₹ ${res.totalPrice}`;
+          this.loadMyReservations();
+        },
         error: (err: any) => (this.msg = err?.error ?? 'Booking failed')
       });
   }
@@ -114,4 +186,20 @@ export class PropertyDetail implements OnInit {
       }
     });
   }
+
+  // method for renter cancel reservation
+  cancelReservation(id: number) {
+    this.reservations.cancel(id).subscribe({
+      next: () => {
+        // Refresh reservations after cancelling
+        this.loadMyReservations();
+        this.msg = 'Reservation cancelled successfully';
+      },
+      error: err => {
+        this.msg = err?.error ?? 'Failed to cancel reservation';
+      }
+    });
+  }
+
+  
 }

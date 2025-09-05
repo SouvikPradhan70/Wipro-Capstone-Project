@@ -40,3 +40,75 @@
     grid-template-columns: 1fr;
   }
 }
+.reservations-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 12px;
+  background: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+
+  th, td {
+    padding: 10px 12px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+  }
+
+  th {
+    background: #f5f5f5;
+    font-weight: 600;
+  }
+
+  tr:hover {
+    background: #fafafa;
+  }
+
+  button {
+    font-size: 13px;
+    padding: 4px 10px;
+  }
+}
+
+@media (max-width: 600px) {
+  .reservations-table {
+    font-size: 14px;
+
+    th, td {
+      padding: 8px;
+    }
+  }
+}
+
+.reviews {
+  margin-top: 24px;
+
+  .review-card {
+    border: 1px solid #ddd;
+    padding: 12px;
+    margin-bottom: 8px;
+    border-radius: 6px;
+  }
+
+  .stars mat-icon {
+    vertical-align: middle;
+  }
+
+  .star-input mat-icon {
+    cursor: pointer;
+    font-size: 32px;
+    transition: transform 0.2s;
+  }
+
+  .star-input mat-icon:hover {
+    transform: scale(1.2);
+  }
+
+  .overall-rating mat-icon {
+    font-size: 28px;
+    vertical-align: middle;
+  }
+}
+
+
+
