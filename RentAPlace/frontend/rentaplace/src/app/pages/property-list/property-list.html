@@ -1,12 +1,15 @@
-<div class="filters">
+<h2 class="text-center my-3 fw-bold">🏡 Browse Properties</h2>
+
+<!-- Filters Section -->
+<div class="filters shadow-sm p-3 rounded bg-light">
   <mat-form-field appearance="outline">
     <mat-label>City</mat-label>
-    <input matInput [(ngModel)]="city">
+    <input matInput [(ngModel)]="city" placeholder="Enter city" />
   </mat-form-field>
 
   <mat-form-field appearance="outline">
     <mat-label>Country</mat-label>
-    <input matInput [(ngModel)]="country">
+    <input matInput [(ngModel)]="country" placeholder="Enter country" />
   </mat-form-field>
 
   <mat-form-field appearance="outline">
@@ -21,20 +24,25 @@
 
   <mat-form-field appearance="outline">
     <mat-label>Guests</mat-label>
-    <input type="number" min="1" matInput [(ngModel)]="guests">
+    <input type="number" min="1" matInput [(ngModel)]="guests" placeholder="No. of guests" />
   </mat-form-field>
 
-  <button mat-flat-button color="primary" (click)="search()">Apply</button>
+  <div class="d-flex align-items-center">
+    <button mat-raised-button color="primary" (click)="search()">🔍 Apply</button>
+  </div>
 </div>
 
-<div *ngIf="loading">Loading...</div>
+<!-- Loading -->
+<div *ngIf="loading" class="text-center my-3">Loading...</div>
 
+<!-- Property Cards -->
 <div class="grid">
-  <mat-card class="prop" *ngFor="let p of items" (click)="view(p.id)">
+  <mat-card class="prop shadow-sm" *ngFor="let p of items" (click)="view(p.id)">
     <img *ngIf="p.images?.length" [src]="'http://localhost:5264' + p.images[0]" alt="cover" />
-    <mat-card-title>{{ p.title }}</mat-card-title>
-    <mat-card-subtitle>{{ p.city }}, {{ p.country }}</mat-card-subtitle>
-    <div class="price">₹ {{ p.pricePerNight }} / night</div>
-
+    <mat-card-content>
+      <h3 class="prop-title">{{ p.title }}</h3>
+      <p class="prop-location">{{ p.city }}, {{ p.country }}</p>
+      <p class="price">₹ {{ p.pricePerNight }} <span class="per-night">/ night</span></p>
+    </mat-card-content>
   </mat-card>
 </div>

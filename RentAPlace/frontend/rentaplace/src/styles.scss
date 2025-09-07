@@ -1,5 +1,6 @@
 @use '@angular/material' as mat;
 
+/* Angular Material theme setup */
 html {
   @include mat.theme((
     color: (
@@ -17,11 +18,6 @@ body {
   color: var(--mat-sys-on-surface);
   font: var(--mat-sys-body-medium);
   margin: 0;
-}
-
-html, body {
-  height: 100%;
-  margin: 0;
   font-family: Roboto, Arial, sans-serif;
   background: #fafafa;
 }
@@ -35,4 +31,22 @@ mat-toolbar {
   padding: 12px;
   max-width: 1200px;
   margin: 0 auto;
+}
+
+/* === Layout fix for footer === */
+html, body {
+  height: 100%;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+app-root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* full viewport height */
+}
+
+main {
+  flex: 1; /* pushes footer down if content is small */
 }

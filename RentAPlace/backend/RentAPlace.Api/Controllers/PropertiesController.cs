@@ -84,21 +84,17 @@ namespace RentAPlace.Api.Controllers
         // Owner creates a property
         [HttpPost]
         [Authorize(Roles = "Owner")]
-        public async Task<ActionResult> Create(PropertyCreateDto dto)
+        public async Task<ActionResult> Create([FromForm] PropertyCreateDto dto, [FromForm] IFormFileCollection? files)
         {
             var sub = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (string.IsNullOrEmpty(sub)) return Unauthorized();
             var ownerId = Guid.Parse(sub);
 
-
-            // Check if the property already exists
             var exists = await _db.Properties.AnyAsync(p => p.OwnerId == ownerId && p.Title == dto.Title && p.City == dto.City);
             if (exists)
             {
                 return BadRequest("Property with the same name already exists in this city.");
             }
-
-
 
             var prop = new Property
             {
@@ -121,10 +117,22 @@ namespace RentAPlace.Api.Controllers
             _db.Properties.Add(prop);
             await _db.SaveChangesAsync();
 
-            if (dto.AmenityIds.Any())
+            // amenities
+            if (dto.AmenityIds != null && dto.AmenityIds.Any())
             {
                 var toAdd = dto.AmenityIds.Select(aid => new PropertyAmenity { PropertyId = prop.Id, AmenityId = aid });
                 _db.PropertyAmenities.AddRange(toAdd);
+                await _db.SaveChangesAsync();
+            }
+
+            // images
+            if (files != null && files.Count > 0)
+            {
+                var urls = new List<string>();
+                foreach (var f in files)
+                    urls.Add(await _images.SavePropertyImageAsync(f));
+
+                _db.PropertyImages.AddRange(urls.Select(u => new PropertyImage { PropertyId = prop.Id, ImageUrl = u }));
                 await _db.SaveChangesAsync();
             }
 
@@ -141,11 +149,27 @@ namespace RentAPlace.Api.Controllers
             if (!exists) return NotFound();
             if (files == null || files.Count == 0) return BadRequest("No files uploaded");
 
+            var currentCount = await _db.PropertyImages.CountAsync(pi => pi.PropertyId == id);
+            if (currentCount + files.Count > 5)
+                return BadRequest("Maximum 5 images allowed");
+
             var urls = new List<string>();
             foreach (var f in files) urls.Add(await _images.SavePropertyImageAsync(f));
             _db.PropertyImages.AddRange(urls.Select(u => new PropertyImage { PropertyId = id, ImageUrl = u }));
             await _db.SaveChangesAsync();
             return Ok(urls);
+        }
+
+        // DELETE api/properties/{propertyId}/images/{imageId}
+        [HttpDelete("{propertyId}/images/{imageId}")]
+        [Authorize(Roles = "Owner")]
+        public async Task<ActionResult> DeleteImage(int propertyId, int imageId)
+        {
+            var img = await _db.PropertyImages.FirstOrDefaultAsync(i => i.Id == imageId && i.PropertyId == propertyId);
+            if (img == null) return NotFound();
+            _db.PropertyImages.Remove(img);
+            await _db.SaveChangesAsync();
+            return NoContent();
         }
 
         // PUT api/properties/{id}
@@ -172,7 +196,7 @@ namespace RentAPlace.Api.Controllers
             prop.UpdatedAt = DateTime.UtcNow;
 
             _db.PropertyAmenities.RemoveRange(prop.PropertyAmenities);
-            if (dto.AmenityIds.Any())
+            if (dto.AmenityIds != null && dto.AmenityIds.Any())
             {
                 var toAdd = dto.AmenityIds.Select(aid => new PropertyAmenity { PropertyId = prop.Id, AmenityId = aid });
                 _db.PropertyAmenities.AddRange(toAdd);

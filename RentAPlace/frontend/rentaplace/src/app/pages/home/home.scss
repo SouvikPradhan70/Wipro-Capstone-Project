@@ -25,3 +25,63 @@
     margin-right: auto;
   }
 }
+
+// Mobile devices (max-width: 576px)
+@media (max-width: 576px) {
+  .hero {
+    h1 {
+      font-size: 1.8rem; // smaller heading
+    }
+  }
+
+  .search-card {
+    padding: 1.5rem !important;
+
+    .row {
+      display: flex;
+      flex-direction: column; // stack inputs vertically
+      gap: 1rem; // spacing between inputs
+      align-items: center; // center inputs
+    }
+
+    .col-md-3 {
+      flex: 0 0 100% !important; // full width
+      max-width: 100% !important;
+    }
+
+    mat-form-field {
+      width: 100% !important; // ensure inputs span full width
+    }
+
+    button {
+      width: 100% !important; // full width button
+      margin-top: 0 !important;
+    }
+  }
+}
+
+// Tablets (max-width: 992px)
+@media (max-width: 992px) {
+  .hero {
+    h1 {
+      font-size: 2.2rem;
+    }
+  }
+
+  .search-card {
+    .row {
+      flex-wrap: wrap; // allow wrapping if space is tight
+    }
+
+    .col-md-3 {
+      flex: 0 0 48%; // 2 inputs per row
+      max-width: 48%;
+      margin-bottom: 1rem;
+    }
+
+    button {
+      width: 100%; // make button full width on smaller tablets
+      margin-top: 0.5rem;
+    }
+  }
+}

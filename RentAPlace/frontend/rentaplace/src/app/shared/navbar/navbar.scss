@@ -1,10 +1,128 @@
-mat-toolbar {
-  position: sticky;
+/* Navbar container */
+.navbar {
+  position: fixed; // make it fixed instead of sticky
   top: 0;
-  z-index: 100;
+  left: 0;
+  right: 0;
+  z-index: 1100; // higher than footer, dialogs, etc.
+  background: #ffffff;
   display: flex;
-  gap: 12px;
+  gap: 16px;
+  padding: 0 24px;
+  min-height: 64px;
+  border-bottom: 1px solid #e0e0e0;
 }
-.brand { font-weight: 700; cursor: pointer; }
-.spacer { flex: 1; }
-.welcome { margin-right: 8px; }
+
+/* Brand */
+.brand {
+  font-weight: 700;
+  font-size: 1.3rem;
+  color: #1976d2;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.brand:hover {
+  color: #125aa1;
+}
+
+/* Links */
+.nav-link {
+  font-weight: 500;
+  color: #333 !important;
+  transition: color 0.2s ease-in-out;
+}
+
+.nav-link:hover {
+  color: #1976d2 !important;
+}
+
+/* Spacer to push auth buttons right */
+.spacer {
+  flex: 1;
+}
+
+/* Welcome text */
+.welcome {
+  font-weight: 500;
+  margin-right: 12px;
+  color: #444;
+}
+
+/* Buttons */
+button[mat-stroked-button],
+a[mat-stroked-button] {
+  font-weight: 500;
+  border-radius: 20px;
+  padding: 0 16px;
+}
+
+a[mat-flat-button] {
+  font-weight: 600;
+  border-radius: 20px;
+  padding: 0 18px;
+}
+
+
+/* Tablets (max-width: 992px) */
+@media (max-width: 992px) {
+  .navbar {
+    flex-wrap: wrap; // allow wrapping
+    padding: 0 16px;
+    min-height: auto;
+    align-items: center;
+  }
+
+  .brand {
+    font-size: 1.3rem;
+    margin-bottom: 4px;
+  }
+
+  .nav-link,
+  .welcome,
+  button[mat-stroked-button],
+  a[mat-flat-button] {
+    font-size: 0.9rem;
+    margin: 4px 8px;
+  }
+
+  .spacer {
+    flex-basis: 100%; // push auth buttons to next line
+    height: 0;
+  }
+}
+
+/* Mobile devices (max-width: 576px) */
+@media (max-width: 576px) {
+  .navbar {
+    flex-direction: column;      // stack brand, links, auth vertically
+    align-items: center;         // center all items
+    padding: 8px 12px;
+    gap: 8px;
+  }
+
+  .brand {
+    font-size: 1.2rem;
+    text-align: center;
+  }
+
+  .nav-link {
+    width: 100%;
+    text-align: center;
+    margin: 2px 0;
+  }
+
+  .welcome,
+  button[mat-stroked-button],
+  a[mat-stroked-button],
+  a[mat-flat-button] {
+    width: 100%;                 // full width buttons and welcome text
+    text-align: center;
+    margin: 4px 0;
+    display: block !important;   // force visible
+  }
+
+  .spacer {
+    display: none;               // remove spacer on mobile
+  }
+}

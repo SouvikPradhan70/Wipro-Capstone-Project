@@ -9,7 +9,7 @@ import { HttpHeaders } from '@angular/common/http';
 export class PropertyService {
   private readonly api = `${environment.apiBase}/api/properties`;
 
-  constructor(private http: HttpClient ,private auth: AuthService) {}
+  constructor(private http: HttpClient, private auth: AuthService) { }
 
   search(q: SearchQuery) {
     let params = new HttpParams();
@@ -32,15 +32,26 @@ export class PropertyService {
     return this.http.get<PropertyFull[]>(`${this.api}/mine`);
   }
 
-  create(dto: PropertyCreateDto) {
-    return this.http.post<{ id: number }>(this.api, dto);
+  createWithFiles(dto: PropertyCreateDto, files: File[]) {
+    const form = new FormData();
+
+    // append property fields
+    Object.entries(dto).forEach(([k, v]) => {
+      if (Array.isArray(v)) {
+        v.forEach(val => form.append(k, val.toString())); // for AmenityIds
+      } else if (v !== undefined && v !== null) {
+        form.append(k, v.toString());
+      }
+    });
+
+    // append files
+    files.forEach(f => form.append('files', f));
+    return this.http.post<{ id: number }>(this.api, form);
   }
 
-  uploadImages(propertyId: number, files: File[]) {
-    const form = new FormData();
-    files.forEach(f => form.append('files', f));
-    return this.http.post<string[]>(`${this.api}/${propertyId}/images`, form);
-  }
+  uploadImages(propertyId: number, formData: FormData) {
+  return this.http.post<string[]>(`${this.api}/${propertyId}/images`, formData);
+}
 
   // NEW: Update property
   update(id: number, data: any) {
@@ -53,6 +64,12 @@ export class PropertyService {
       Authorization: `Bearer ${this.auth.token}`
     });
     return this.http.delete(`${this.api}/${id}`, { headers });
+  }
+
+  // Delete a single property image
+  deleteImage(propertyId: number, imageId: number) {
+    const headers = new HttpHeaders({ Authorization: `Bearer ${this.auth.token}` });
+    return this.http.delete(`${this.api}/${propertyId}/images/${imageId}`, { headers });
   }
 
   // Optional: Get my properties

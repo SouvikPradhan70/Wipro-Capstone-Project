@@ -128,6 +128,7 @@ SELECT * FROM PropertyAmenities;
 
 SELECT * FROM Users;
 SELECT * FROM Properties;
+SELECT * FROM Amenities;
 SELECT * FROM PropertyAmenities;
 SELECT * FROM PropertyImages;
 SELECT * FROM Reservations;

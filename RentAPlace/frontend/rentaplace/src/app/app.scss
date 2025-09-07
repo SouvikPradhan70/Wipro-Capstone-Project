@@ -1,3 +1,39 @@
-.container {
-  padding: 16px;
+// html, body {
+//   height: 100%;
+//   margin: 0;
+// }
+
+// app-root {
+//   display: flex;
+//   flex-direction: column;
+//   min-height: 100vh;
+// }
+
+// main {
+//   flex: 1 0 auto; // allow main to expand and push footer down
+// }
+
+// app-footer {
+//   flex-shrink: 0; // prevent footer from shrinking
+// }
+
+
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+app-root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+main {
+  flex: 1 0 auto; // allow main to expand and push footer down
+  padding-top: 64px; // push content down so it doesn't overlap with navbar
+}
+
+app-footer {
+  flex-shrink: 0; // prevent footer from shrinking
 }

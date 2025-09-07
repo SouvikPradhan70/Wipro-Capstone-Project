@@ -1,21 +1,26 @@
-<mat-toolbar>
-  <span class="brand" routerLink="/">RentAPlace</span>
+<mat-toolbar class="navbar shadow-sm">
+  <!-- Brand -->
+  <span class="brand" routerLink="/">🏠 RentAPlace</span>
 
+  <!-- Spacer -->
   <span class="spacer"></span>
 
-  <a mat-button routerLink="/properties">Browse</a>
+  <!-- Links -->
+  <a mat-button routerLink="/properties" class="nav-link">Browse</a>
 
   <ng-container *ngIf="auth.role === 'Owner'; else renterLinks">
-    <a mat-button routerLink="/owner">Owner Dashboard</a>
+    <a mat-button routerLink="/owner" class="nav-link">Owner Dashboard</a>
   </ng-container>
   <ng-template #renterLinks></ng-template>
 
+  <!-- Auth Section -->
   <ng-container *ngIf="(auth.currentUser$ | async) as u; else guest">
-    <span class="welcome">Hi, {{ u.fullName }}</span>
-    <button mat-stroked-button (click)="logout()">Logout</button>
+    <span class="welcome">👋 Hi, {{ u.fullName }}</span>
+    <button mat-stroked-button color="warn" (click)="logout()">Logout</button>
   </ng-container>
+
   <ng-template #guest>
-    <a mat-stroked-button routerLink="/login">Login</a>
-    <a mat-flat-button color="primary" routerLink="/register">Register</a>
+    <a mat-stroked-button color="primary" routerLink="/login">Login</a>
+    <a mat-flat-button color="accent" routerLink="/register">Register</a>
   </ng-template>
 </mat-toolbar>
